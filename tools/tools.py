@@ -87,6 +87,32 @@ def vex(x):
     """
     return np.array([x[2][1], x[0][2], x[1][0]])
 
+def vee_map(rotation_matrix):
+        """
+        计算3x3反对称旋转矩阵的vee映射, 得到对应的三维向量
+        
+        参数:
+        rotation_matrix (np.ndarray): 3x3的反对称旋转矩阵
+        
+        返回:
+        np.ndarray: 对应的三维向量
+        """
+        # 验证矩阵是否为3x3
+        if rotation_matrix.shape != (3, 3):
+            raise ValueError("输入矩阵必须是3x3的")
+        
+        # 验证矩阵是否为反对称矩阵（A^T = -A）
+        if not np.allclose(rotation_matrix.T, -rotation_matrix):
+            raise ValueError("输入矩阵必须是反对称矩阵")
+        
+        # 提取向量分量（反对称矩阵的特定元素）
+        w = np.array([
+            rotation_matrix[2, 1],  # ω₁ = M₂₃ = -M₃₂
+            rotation_matrix[0, 2],  # ω₂ = M₃₁ = -M₁₃
+            rotation_matrix[1, 0]   # ω₃ = M₁₂ = -M₂₁
+        ]).reshape(-1, 1)
+        
+        return w
 
 def normalizeWithGrad(x, xd):
     xSqrNorm = x[0] ** 2 + x[1] ** 2 + x[2] ** 2

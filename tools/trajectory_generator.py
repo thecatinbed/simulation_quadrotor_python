@@ -5,8 +5,8 @@ CIRCULAR = 1
 STRAIGHT = 2
 
 class trajectory_generator():
-    def __init__(self, dt, type: Enum):
-        self.trajectory_type = type
+    def __init__(self, dt, trajectory_type: Enum):
+        self.trajectory_type = trajectory_type
         self.trajectory = [0, 0, 0, 0]  # 微分平坦输出: [x, y, z, psi]
         self.dt = dt
         self.t = 0
