@@ -78,6 +78,11 @@ def sat_gd(u, a, size):
         else:
             return a * np.divide(u, u_max)
 
+def saturation_fuc(x, lower=-1, upper=1):
+    x = np.where(x < lower, lower, x)
+    x = np.where(x > upper, upper, x)
+    return x
+
 
 def vex(x):
     """
@@ -97,13 +102,13 @@ def vee_map(rotation_matrix):
         返回:
         np.ndarray: 对应的三维向量
         """
-        # 验证矩阵是否为3x3
-        if rotation_matrix.shape != (3, 3):
-            raise ValueError("输入矩阵必须是3x3的")
+        # # 验证矩阵是否为3x3
+        # if rotation_matrix.shape != (3, 3):
+        #     raise ValueError("输入矩阵必须是3x3的")
         
-        # 验证矩阵是否为反对称矩阵（A^T = -A）
-        if not np.allclose(rotation_matrix.T, -rotation_matrix):
-            raise ValueError("输入矩阵必须是反对称矩阵")
+        # # 验证矩阵是否为反对称矩阵（A^T = -A）
+        # if not np.allclose(rotation_matrix.T, -rotation_matrix):
+        #     raise ValueError("输入矩阵必须是反对称矩阵")
         
         # 提取向量分量（反对称矩阵的特定元素）
         w = np.array([

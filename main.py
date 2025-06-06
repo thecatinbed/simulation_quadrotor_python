@@ -1,8 +1,13 @@
+import sys , os
+base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+sys.path.append(base_dir)
+
 from model import quadrotors_parameters as QPara  # 导入quadrotors_parameters模块并命名为QPara
 from model import quadrotors_model as QModel  # 导入quadrotors_model模块并命名为QModel
 from controllers import euler_controller  # 导入euler_controller模块
 from draw import draw  # 导入draw模块
 from draw import draw3d  # 导入draw3d模块
+
 
 def main():
     euler_ctrl_para = euler_controller.ControllerParameters()  # 创建Euler控制器参数对象

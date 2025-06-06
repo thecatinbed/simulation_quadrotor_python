@@ -37,9 +37,11 @@ class QuadrotorsModel:
 
         G_a = self.getGyroMoment(ang_v_motors)
         disturbance = self.disturbance(t)
+        disturbance = np.array([0, 0, 0])
 
         tau_now = tau_now.flatten() + disturbance[0:3]
         disturbance_f = np.array(disturbance[3:])
+        disturbance_f = np.array([0, 0, 0])
 
         # 计算机体角加速度
         ang_acceleration_now = (np.dot(np.linalg.inv(QPara.J), tau_now.reshape(3, 1) + G_a.reshape(3, 1)

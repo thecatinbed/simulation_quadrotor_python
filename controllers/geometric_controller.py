@@ -6,13 +6,13 @@ import numpy as np
 from tools.tools import *
 
 class geometric_controller:
-    def __init__(self, m = 1.2, g = 9.81):
+    def __init__(self, m = 2.2, g = 9.8):
         self.m = m
         self.g = g
-        self.KP = np.diag([10, 10, 10])
-        self.KV = np.diag([1, 1, 1])
-        self.KR = np.diag([1, 1, 1])
-        self.KW = np.diag([1, 1, 1])
+        self.KP = np.diag([1, 1, 0.5])
+        self.KV = np.diag([5, 5, 5])
+        self.KR = np.diag([2, 2, 2])
+        self.KW = np.diag([5, 5, 5])
 
     def calculate_output(self, r, r_dot, R, angular_vel, r_des, r_dot_des, r_ddot_des, psi_des, angular_vel_des = np.array([0, 0, 0]).reshape(-1, 1)):
         """
@@ -35,19 +35,30 @@ class geometric_controller:
         # 计算期望推力
         e_P = r - r_des
         e_V = r_dot - r_dot_des
-        z_w = np.array([0, 0, 1]).reshape(-1, 1)   # 列向量
-        F_des =  - self.KP @ e_P - self.KV @ e_V + self.m * self.g * z_w + self.m * r_ddot_des # pd + 加速度前馈
+        z_W = np.array([0, 0, 1]).reshape(-1, 1)   # 列向量
+        F_des = self.KP @ e_P + self.KV @ e_V + self.m * self.g * z_W + self.m * r_ddot_des # pd + 加速度前馈
+        # u_1 = F_des.T @ R @ np.array([0, 0, 1]).reshape(-1, 1)
         u_1 = F_des.T @ R @ np.array([0, 0, 1]).reshape(-1, 1)
+
         # 计算期望力矩
-        z_B_des = F_des / np.linalg.norm(F_des)
-        x_C_des = np.array([np.cos(psi_des), np.sin(psi_des), 0]).reshape(-1, 1)
-        y_B_des = np.cross(z_B_des.flatten(), x_C_des.flatten()).reshape(-1, 1)
-        y_B_des = y_B_des / np.linalg.norm(y_B_des)
-        x_B_des = np.cross(z_B_des.flatten(), y_B_des.flatten()).reshape(-1, 1)
+        z_B_des = F_des / (np.linalg.norm(F_des) + 1e-4)
+        # z_B_des = np.array([0, 1, 1]).reshape(-1, 1)
+        # z_B_des = z_B_des / np.linalg.norm(z_B_des)
+        # x_C_des = np.array([np.cos(psi_des), np.sin(psi_des), 0]).reshape(-1, 1)
+        # y_B_des = np.cross(z_B_des.flatten(), x_C_des.flatten()).reshape(-1, 1)
+        # y_B_des = y_B_des / np.linalg.norm(y_B_des)
+        # x_B_des = np.cross(y_B_des.flatten(), z_B_des.flatten()).reshape(-1, 1)
+        # x_B_des = x_B_des / np.linalg.norm(x_B_des)
+        y_C_des = np.array([-np.sin(psi_des), np.cos(psi_des), 0])
+        x_B_des = np.cross(y_C_des.flatten(), z_B_des.flatten()).reshape(-1, 1)
         x_B_des = x_B_des / np.linalg.norm(x_B_des)
+        y_B_des = np.cross(z_B_des.flatten(), x_B_des.flatten()).reshape(-1, 1)
+
         R_des = np.hstack((x_B_des, y_B_des, z_B_des))
         temp_e_R = 0.5 * (R_des.T @ R - R.T @ R_des)
         e_R = vee_map(temp_e_R)
+        # e_R = temp_e_R @ np.array([0, 0, 1]).reshape(-1, 1)
+        # e_R = np.array([0, 0, 0]).reshape(-1, 1)
         e_W = angular_vel - angular_vel_des
         tau = - self.KR @ e_R - self.KW @ e_W
         return np.vstack((u_1, tau))
@@ -76,6 +87,7 @@ def run_test_case():
     r_dot_des = np.random.randn(3, 1) * 0.2  # 期望速度 [m/s]
     r_ddot_des = np.random.randn(3, 1) * 0.1  # 期望加速度 [m/s^2]
     psi_des = np.random.uniform(-np.pi, np.pi)  # 期望偏航角 [rad]
+    psi_des = 0
     angular_vel_des = np.random.randn(3, 1) * 0.1  # 期望角速度 [rad/s]
     
     # 计算控制输出
@@ -106,7 +118,8 @@ if __name__ == "__main__":
     # 运行10次随机测试
     num_tests = 10
     passed = 0
-    
+    R = getR(np.array([0, np.pi / 4, 0]))
+    print(R)
     for i in range(num_tests):
         print(f"\n=== 测试 {i+1}/{num_tests} ===")
         if run_test_case():
