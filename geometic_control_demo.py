@@ -20,38 +20,6 @@ def calculate_throttle(f_tau):
     throttle = ang_v_motors / QPara.Cr
     return  throttle
 
-def get_trajectory(type,t):
-    r = 3
-    if type == 1 :
-        if t <= 10:
-            position = (0, 0, 1)
-        elif t <= 20:
-            position = (0, 0, 1)
-        elif t <= 35:
-            position = (r * math.cos(2 * math.pi / 30 * (t-20)) - r, r * math.sin(2 * math.pi / 30 * (t-20)) , 1)
-        elif t <= 40:
-            position = (r * math.cos(2 * math.pi / 30 * (35-20)) - r,r * math.sin(2 * math.pi / 30 * (35-20)), 1)
-        else:
-            position = (r * math.cos(2 * math.pi / 30 * (35-20)) - r,r * math.sin(2 * math.pi / 30 * (35-20)), 0)
-    elif type == 0:
-        if t <= 10:
-            position = (0, 0, 10)
-        elif t <= 20:
-            position = (1, 1, 10)
-        elif t <= 30:
-            position = (2, 3, 10)
-        elif t <= 40:
-            position = (4, 2, 10)
-        elif t <= 50:
-            position = (1, 1, 10)
-        elif t <= 60:
-            position = (1, 1, 0)
-    elif type == 2:
-        position = (r * math.cos(2 * math.pi / 20 * (t)) - r, r * math.sin(2 * math.pi / 20 * (t)), 1)
-    elif type == 3:
-        position = (math.cos(2 * math.pi / 20 * (t)) + 2, math.sin(2 * math.pi / 20 * (t)) + 2, 10)
-    return position
-
 def main():
     quadrotors_model = QModel.QuadrotorsModel()  # 创建四旋翼模型对象
     t = []  # 创建时间列表，初始时间为0
