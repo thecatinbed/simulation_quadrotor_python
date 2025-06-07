@@ -9,8 +9,8 @@ class trajectory_generator():
         self.trajectory = [0, 0, 0, 0, 0, 0, 0] # [x, y, z, psi, vx, vy, vz]  
         self.dt = dt
         self.t = 0
-        self.takeoff_vel = 0.1
-        self.takeoff_height = 3
+        self.takeoff_vel = -0.1
+        self.takeoff_height = -3
         self.circular_radius = 3
         self.angular_vel = 3 / self.circular_radius
 

@@ -9,7 +9,7 @@ class geometric_controller:
     def __init__(self, m = 2.2, g = 9.8):
         self.m = m
         self.g = g
-        self.KP = np.diag([1, 1, 0.5])
+        self.KP = np.diag([1, 1, 1])
         self.KV = np.diag([5, 5, 5])
         self.KR = np.diag([2, 2, 2])
         self.KW = np.diag([5, 5, 5])

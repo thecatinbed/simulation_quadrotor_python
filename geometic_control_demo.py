@@ -46,7 +46,7 @@ def main():
             # break
             flag = True
             des_traj = traj_generator.get_trajectory()
-            des_traj[2] = 3
+            # des_traj[2] = 3
 
         r_des = np.array(des_traj[:3]).reshape(-1, 1)
         psi_des = 0
