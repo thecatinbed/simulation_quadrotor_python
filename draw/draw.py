@@ -19,7 +19,7 @@ def draw(t, ctrl_buffer, measurement, eval, coordinate, fig_name):
     attitude_des = ctrl_buffer[:, 3:]
     x = t
 
-    plt.figure()
+    plt.figure(figsize=(10, 6))
     # 绘制位置 x 和期望位置 x 的图
     plt.subplot(2, 3, 1)
     if coordinate == 0:
@@ -105,8 +105,83 @@ def draw(t, ctrl_buffer, measurement, eval, coordinate, fig_name):
     plt.tight_layout(pad=0.2, h_pad=0.2, w_pad=0.2)
     plt.subplots_adjust(left=0.103, bottom=0.105, right=0.977, top=0.969, wspace=0.8, hspace=0.277)
     # plt.savefig('./images/{}.png'.format(fig_name), format='png', dpi=900, bbox_inches='tight')
-    plt.show()
-    #plt.close()
+    # plt.show()
+    # plt.close()
+
+
+def draw_error(t, error_buffer, fig_name):
+    """
+     绘制图形
+
+    :param t: 时间序列
+    :param error_buffer: 包含位置和姿态误差
+    :param fig_name: 图形名称
+    :return: 无返回值
+    """
+    position_error = error_buffer[:, 0:3]
+    attitude_error = error_buffer[:, 3:6]
+    x = t
+
+    plt.figure(figsize=(10, 6))
+    # 绘制位置 x 和期望位置 x 的图
+    plt.subplot(2, 3, 1)
+    y_1 = position_error[:, 0]
+    plt.plot(x, y_1, '--', color='red', linewidth=1.2)
+    plt.xlabel('time(s)', fontsize=10)
+    plt.ylabel('Error_x(m)', fontsize=10)
+    plt.legend(['x', 'position_x_des'], fontsize=8)
+    plt.tick_params(labelsize=10)
+    plt.xlim(xmin=0)
+    # 绘制位置 y 和期望位置 y 的图
+    plt.subplot(2, 3, 2)
+    y_1 = position_error[:, 1]
+    plt.plot(x, y_1, '--', color='red', linewidth=1.2)
+    plt.xlabel('time(s)', fontsize=10)
+    plt.ylabel('Error_y(m)', fontsize=10)
+    plt.legend(['y', 'position_y_des'], fontsize=8)
+    plt.tick_params(labelsize=10)
+    plt.xlim(xmin=0)
+    # 绘制位置 z 和期望位置 z 的图
+    plt.subplot(2, 3, 3)
+    y_1 = position_error[:, 2]
+    plt.plot(x, y_1, '--', color='red', linewidth=1.2)
+    plt.xlabel('time(s)', fontsize=10)
+    plt.ylabel('Error_z(m)', fontsize=10)
+    plt.legend(['z', 'position_z_des'], fontsize=8)
+    plt.tick_params(labelsize=10)
+    plt.xlim(xmin=0)
+    # figure of phi and desired phi
+    plt.subplot(2, 3, 4)
+    y_1 = attitude_error[:, 0]
+    plt.plot(x, y_1, '--', color='red', linewidth=1.2)
+    plt.xlabel('time(s)', fontsize=10)
+    plt.ylabel('Error_phi(rad)', fontsize=10)
+    plt.legend(['phi', 'phi_des'], fontsize=8)
+    plt.tick_params(labelsize=10)
+    plt.xlim(xmin=0)
+    # figure of theta and desired theta
+    plt.subplot(2, 3, 5)
+    y_1 = attitude_error[:, 1]
+    plt.plot(x, y_1, '--', color='red', linewidth=1.2)
+    plt.xlabel('time(s)', fontsize=10)
+    plt.ylabel('Error_theta(rad)', fontsize=10)
+    plt.legend(['theta', 'theta_des'], fontsize=8)
+    plt.tick_params(labelsize=10)
+    plt.xlim(xmin=0)
+    # figure of psi and desired psi
+    plt.subplot(2, 3, 6)
+    y_1 = attitude_error[:, 2]
+    plt.plot(x, y_1, '--', color='red', linewidth=1.2)
+    plt.xlabel('time(s)', fontsize=10)
+    plt.ylabel('Error_psi(rad)', fontsize=10)
+    plt.legend(['psi', 'psi_des'], fontsize=8)
+    plt.tick_params(labelsize=10)
+    plt.xlim(xmin=0)
+
+    plt.tight_layout(pad=0.2, h_pad=0.2, w_pad=0.2)
+    plt.subplots_adjust(left=0.103, bottom=0.105, right=0.977, top=0.969, wspace=0.8, hspace=0.277)
+    # plt.savefig('./images/{}.png'.format(fig_name), format='png', dpi=900, bbox_inches='tight')
+    # plt.show()
 
 
 def evaluation(t, y_1, y_2):

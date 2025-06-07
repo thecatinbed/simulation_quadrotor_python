@@ -3,16 +3,18 @@ base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.append(base_dir)
 
 import numpy as np
-from tools.tools import *
+from tools import tools
 
 class geometric_controller:
     def __init__(self, m = 2.2, g = 9.8):
         self.m = m
         self.g = g
-        self.KP = np.diag([0.8, 0.8, 10])
-        self.KV = np.diag([10, 10, 10])
-        self.KR = np.diag([4, 4, 4])
+        self.KP = np.diag([10, 10, 30])
+        self.KV = np.diag([25, 25, 15])
+        self.KR = np.diag([12, 12, 12])
         self.KW = np.diag([2, 2, 2])
+        self.error_buffer = np.zeros((6, 1))
+        self.desire_state = np.zeros((6,1))
 
     def calculate_output(self, r, r_dot, R, angular_vel, r_des, r_dot_des, r_ddot_des, psi_des, angular_vel_des = np.array([0, 0, 0]).reshape(-1, 1)):
         """
@@ -44,23 +46,28 @@ class geometric_controller:
         z_B_des = F_des / (np.linalg.norm(F_des) + 1e-4)
         # z_B_des = np.array([0, 1, 1]).reshape(-1, 1)
         # z_B_des = z_B_des / np.linalg.norm(z_B_des)
-        # x_C_des = np.array([np.cos(psi_des), np.sin(psi_des), 0]).reshape(-1, 1)
-        # y_B_des = np.cross(z_B_des.flatten(), x_C_des.flatten()).reshape(-1, 1)
-        # y_B_des = y_B_des / np.linalg.norm(y_B_des)
-        # x_B_des = np.cross(y_B_des.flatten(), z_B_des.flatten()).reshape(-1, 1)
-        # x_B_des = x_B_des / np.linalg.norm(x_B_des)
-        y_C_des = np.array([-np.sin(psi_des), np.cos(psi_des), 0])
-        x_B_des = np.cross(y_C_des.flatten(), z_B_des.flatten()).reshape(-1, 1)
+        # type1
+        x_C_des = np.array([np.cos(psi_des), np.sin(psi_des), 0]).reshape(-1, 1)
+        y_B_des = np.cross(z_B_des.flatten(), x_C_des.flatten()).reshape(-1, 1)
+        y_B_des = y_B_des / np.linalg.norm(y_B_des)
+        x_B_des = np.cross(y_B_des.flatten(), z_B_des.flatten()).reshape(-1, 1)
         x_B_des = x_B_des / np.linalg.norm(x_B_des)
-        y_B_des = np.cross(z_B_des.flatten(), x_B_des.flatten()).reshape(-1, 1)
+        # type2
+        # y_C_des = np.array([-np.sin(psi_des), np.cos(psi_des), 0])
+        # x_B_des = np.cross(y_C_des.flatten(), z_B_des.flatten()).reshape(-1, 1)
+        # x_B_des = x_B_des / np.linalg.norm(x_B_des)
+        # y_B_des = np.cross(z_B_des.flatten(), x_B_des.flatten()).reshape(-1, 1)
 
         R_des = np.hstack((x_B_des, y_B_des, z_B_des))
         temp_e_R = 0.5 * (R_des.T @ R - R.T @ R_des)
-        e_R = vee_map(temp_e_R)
+        e_R = tools.vee_map(temp_e_R)
         # e_R = temp_e_R @ np.array([0, 0, 1]).reshape(-1, 1)
         # e_R = np.array([0, 0, 0]).reshape(-1, 1)
         e_W = angular_vel - angular_vel_des
         tau = - self.KR @ e_R - self.KW @ e_W
+        attitude_des = tools.rotation_matrix_to_euler_angles(R_des)
+        self.desire_state[3:] = np.array(attitude_des).reshape(-1, 1)
+        self.desire_state[:3] = r_des
         return np.vstack((u_1, tau))
 
 def generate_random_rotation_matrix():

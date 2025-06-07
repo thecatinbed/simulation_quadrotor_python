@@ -4,6 +4,7 @@ import math
 class trajectory_generator():
     CIRCULAR = 1
     STRAIGHT = 2
+    SETPOINT = 3
     def __init__(self, dt, trajectory_type: Enum, takeoff_height = 3):
         self.trajectory_type = trajectory_type
         self.trajectory = [0, 0, 0, 0, 0, 0, 0] # [x, y, z, psi, vx, vy, vz]  
@@ -12,7 +13,7 @@ class trajectory_generator():
         self.takeoff_vel = 0.5
         self.takeoff_height = 3
         self.circular_radius = 3
-        self.angular_vel = 1 / self.circular_radius
+        self.angular_vel = 2 / self.circular_radius
 
     def takeoff(self):
         self.trajectory[2] += self.takeoff_vel * self.dt
@@ -27,6 +28,14 @@ class trajectory_generator():
             self.trajectory[3] = 0
             self.trajectory[4] = - self.angular_vel * self.circular_radius * math.sin(self.angular_vel * self.t - math.pi / 2)
             self.trajectory[5] = self.angular_vel * self.circular_radius * math.cos(self.angular_vel * self.t - math.pi / 2)
+            self.trajectory[6] = 0
+        elif self.trajectory_type == self.SETPOINT:
+            self.trajectory[0] = 1
+            self.trajectory[1] = 1
+            self.trajectory[2] = self.takeoff_height
+            self.trajectory[3] = 0
+            self.trajectory[4] = 0
+            self.trajectory[5] = 0
             self.trajectory[6] = 0
         else:
             self.trajectory[0] = 1

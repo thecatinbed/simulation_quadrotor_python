@@ -40,4 +40,4 @@ def draw3d(ctrl_buffer, measurement, coordinate, fig_name):
     ax.legend(['actual', 'desire'], fontsize=8, loc='upper left', bbox_to_anchor=(0, 0.8))
     ax.view_init(20, -30)
     plt.savefig('./images/{}.png'.format(fig_name), format='png', dpi=900, bbox_inches='tight')
-    plt.show()
+    # plt.show()

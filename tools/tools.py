@@ -1,6 +1,49 @@
 import numpy as np
 import math
 
+def rotation_matrix_to_euler_angles(R):
+    """
+    将3x3旋转矩阵转换为欧拉角(ZYX顺序，即偏航-俯仰-滚转)
+
+    参数:
+    R (np.ndarray): 3x3旋转矩阵
+
+    返回:
+    tuple: (偏航yaw, 俯仰pitch, 滚转roll)，单位为弧度
+    """
+    # 确保输入是有效的3x3矩阵
+    R = np.asarray(R, dtype=np.float64)
+    if R.shape != (3, 3):
+        raise ValueError("输入矩阵必须是3x3的旋转矩阵")
+
+    # 计算俯仰角pitch (绕Y轴旋转)
+    # 使用atan2而非asin以获得更稳定的结果
+    sy = np.sqrt(R[0, 0] * R[0, 0] + R[1, 0] * R[1, 0])
+    singular = sy < 1e-6  # 奇异情况检测
+
+    if not singular:
+        # 非奇异情况
+        x = np.arctan2(R[2, 1], R[2, 2])  # 滚转roll (绕X轴)
+        y = np.arctan2(-R[2, 0], sy)  # 俯仰pitch (绕Y轴)
+        z = np.arctan2(R[1, 0], R[0, 0])  # 偏航yaw (绕Z轴)
+    else:
+        # 奇异情况 (俯仰角接近±90°)
+        x = np.arctan2(-R[1, 2], R[1, 1])  # 滚转roll (绕X轴)
+        y = np.arctan2(-R[2, 0], sy)  # 俯仰pitch (绕Y轴)
+        z = 0  # 偏航yaw (任意值，设为0)
+
+    return (x, y, z)  # 返回顺序: 滚转, 俯仰, 偏航
+
+def calculate_throttle(f_tau, thrust_matrix, Cr):
+    ang_v_motors_2 = np.dot(np.linalg.inv(thrust_matrix), f_tau).flatten()
+    ang_v_motors = np.zeros([4])
+    for i in range(4):
+        if ang_v_motors_2[i] < 0:
+            ang_v_motors[i] = 0
+        else:
+            ang_v_motors[i] = math.sqrt(ang_v_motors_2[i])
+    throttle = ang_v_motors / Cr
+    return  throttle
 
 def integral(t, x_1, x_2, size):
     """
