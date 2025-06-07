@@ -23,14 +23,14 @@ def calculate_throttle(f_tau):
 def main():
     quadrotors_model = QModel.QuadrotorsModel()  # 创建四旋翼模型对象
     controller = geometric_controller.geometric_controller(QPara.m, QPara.g)
-    traj_generator = trajectory_generator(QPara.dt, trajectory_generator.STRAIGHT)
+    traj_generator = trajectory_generator(QPara.dt, trajectory_generator.CIRCULAR)
     t = []  # 创建时间列表，初始时间为0
     y_list = [] 
     t_now = 0  # 当前时间初始化为0
     des_traj = []
 
     ctrl_buffer = np.zeros(6)
-    f_list = [0]
+    f_list = [np.array([0])]
     flag = False
     while t_now < 60:
         y_now = quadrotors_model.measurement
@@ -71,7 +71,7 @@ def main():
     t.append(t_now)
     plt.plot(t, f_list)
     draw.draw(t,ctrl_buffer, quadrotors_model.measurement_buffer, 0, 0, "euler")
-    # draw3d.draw3d( ctrl_buffer, quadrotors_model.measurement_buffer, 0, "euler3D")
+    draw3d.draw3d( ctrl_buffer, quadrotors_model.measurement_buffer, 0, "euler3D")
 
 if __name__ == '__main__':
     main()  # 调用main()函数进行程序执行
