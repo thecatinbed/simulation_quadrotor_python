@@ -43,10 +43,8 @@ def main():
         if not flag and abs(quadrotors_model.measurement[2]) < abs(traj_generator.takeoff_height):
             des_traj = traj_generator.takeoff()
         else:
-            # break
             flag = True
             des_traj = traj_generator.get_trajectory()
-            # des_traj[2] = 3
 
         r_des = np.array(des_traj[:3]).reshape(-1, 1)
         psi_des = 0
@@ -57,12 +55,7 @@ def main():
         # r_dot_des = np.array([0,0,0]).reshape(-1, 1)
 
         f_tau = controller.calculate_output(r, r_dot, R, angular_vel, r_des, r_dot_des, np.array([0,0,0]).reshape(-1,1), psi_des)    
-        # f_tau = np.array([QPara.m * QPara.g, 0, 0, 0])
         f_list.append(f_tau[0])
-        # f_tau = tools.saturation_fuc(f_tau, 0, 0.05)
-        # f_tau[0] = f_list[-1]
-        # f_tau = tools.saturation_fuc(f_tau, 21, 22)
-        # f_list[-1] = f_tau[0]
         print(f_tau)
         # 计算油门
         throttle = calculate_throttle(f_tau)
