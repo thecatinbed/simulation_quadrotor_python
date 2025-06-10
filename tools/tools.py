@@ -122,8 +122,11 @@ def sat_gd(u, a, size):
             return a * np.divide(u, u_max)
 
 def saturation_fuc(x, lower=-1, upper=1):
-    x = np.where(x < lower, lower, x)
-    x = np.where(x > upper, upper, x)
+    for i in range(len(x)):
+        if x[i] < lower:
+            x[i] = lower
+        elif x[i] > upper:
+            x[i] = upper
     return x
 
 

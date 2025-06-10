@@ -104,7 +104,7 @@ def draw(t, ctrl_buffer, measurement, eval, coordinate, fig_name):
 
     plt.tight_layout(pad=0.2, h_pad=0.2, w_pad=0.2)
     plt.subplots_adjust(left=0.103, bottom=0.105, right=0.977, top=0.969, wspace=0.8, hspace=0.277)
-    # plt.savefig('./images/{}.png'.format(fig_name), format='png', dpi=900, bbox_inches='tight')
+    plt.savefig('./images/{}.png'.format(fig_name), format='png', dpi=900, bbox_inches='tight')
     # plt.show()
     # plt.close()
 
@@ -180,7 +180,7 @@ def draw_error(t, error_buffer, fig_name):
 
     plt.tight_layout(pad=0.2, h_pad=0.2, w_pad=0.2)
     plt.subplots_adjust(left=0.103, bottom=0.105, right=0.977, top=0.969, wspace=0.8, hspace=0.277)
-    # plt.savefig('./images/{}.png'.format(fig_name), format='png', dpi=900, bbox_inches='tight')
+    plt.savefig('./images/{}.png'.format(fig_name), format='png', dpi=900, bbox_inches='tight')
     # plt.show()
 
 
