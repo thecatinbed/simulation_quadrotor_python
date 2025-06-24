@@ -1,5 +1,5 @@
 <div align="center">
-    <h1>Quadrotor Simulation</h1>
+    <h1>Quadrotor Geometric Control Simulation</h1>
     <br>
     <a href="https://github.com/thecatinbed" target="_blank">Rongqin Mo</a>
     <br>
